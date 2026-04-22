@@ -67,28 +67,6 @@ $cnt=$query->rowCount();
 				</a>
 
 
-<a href="manageissues.php" target="_blank">
-						<div class="col-md-4 four-grid">
-						<div class="four-w3ls">
-							<div class="icon">
-								<i class="glyphicon glyphicon-folder-open" aria-hidden="true"></i>
-							</div>
-							<div class="four-text">
-								<h3>Issues Riaised</h3>
-												<?php $sql5 = "SELECT id from tblissues";
-$query5= $dbh -> prepare($sql5);
-$query5->execute();
-$results5=$query5->fetchAll(PDO::FETCH_OBJ);
-$cnt5=$query5->rowCount();
-					?>
-								<h4><?php echo htmlentities($cnt5);?></h4>
-								
-							</div>
-							
-						</div>
-					</div></a>
-
-
 <a href="manage-packages.php" target="_blank">
 					<div class="col-md-4 four-grid">
 						<div class="four-wthree">
@@ -97,7 +75,7 @@ $cnt5=$query5->rowCount();
 							</div>
 							<div class="four-text">
 								<h3>Toatal packages</h3>
-																	<?php $sql3 = "SELECT PackageId from tbltourpackages";
+												<?php $sql3 = "SELECT PackageId from tbltourpackages";
 $query3= $dbh -> prepare($sql3);
 $query3->execute();
 $results3=$query3->fetchAll(PDO::FETCH_OBJ);

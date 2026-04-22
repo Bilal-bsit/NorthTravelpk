@@ -12,16 +12,49 @@ if(isset($_POST['submit']))
 $pname=$_POST['packagename'];
 $ptype=$_POST['packagetype'];	
 $plocation=$_POST['packagelocation'];
+$map=$_POST['map'];
+//$weather=$_POST['weather'];
+
+$apiKey = "27d393cb64684c90bc5173323261804";
+$city = $plocation;
+
+$url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$city&aqi=yes";
+
+$response = file_get_contents($url);
+$data = json_decode($response, true);
+
+if ($data && isset($data['current'])) {
+    $condition = $data['current']['condition']['text'];
+    $temp = $data['current']['temp_c'];
+    $weather = $condition . " (" . $temp . "°C)";
+} else {
+    $weather = "Weather not available";
+}
+
+
+
 $pprice=$_POST['packageprice'];	
 $pfeatures=$_POST['packagefeatures'];
 $pdetails=$_POST['packagedetails'];	
 $pimage=$_FILES["packageimage"]["name"];
 move_uploaded_file($_FILES["packageimage"]["tmp_name"],"pacakgeimages/".$_FILES["packageimage"]["name"]);
-$sql="INSERT INTO tbltourpackages(PackageName,PackageType,PackageLocation,PackagePrice,PackageFetures,PackageDetails,PackageImage) VALUES(:pname,:ptype,:plocation,:pprice,:pfeatures,:pdetails,:pimage)";
+
+
+//$sql="INSERT INTO tbltourpackages(PackageName,PackageType,PackageLocation,map,weather,PackagePrice,PackageFetures,PackageDetails,PackageImage) VALUES(:pname,:ptype,:plocation,:map,:pprice,:pfeatures,:pdetails,:pimage)";
+
+$sql="INSERT INTO tbltourpackages
+(PackageName,PackageType,PackageLocation,map,weather,PackagePrice,PackageFetures,PackageDetails,PackageImage)
+VALUES
+(:pname,:ptype,:plocation,:map,:weather,:pprice,:pfeatures,:pdetails,:pimage)";
+
+
+
 $query = $dbh->prepare($sql);
 $query->bindParam(':pname',$pname,PDO::PARAM_STR);
 $query->bindParam(':ptype',$ptype,PDO::PARAM_STR);
 $query->bindParam(':plocation',$plocation,PDO::PARAM_STR);
+$query->bindParam(':map',$map,PDO::PARAM_STR);
+$query->bindParam(':weather',$weather,PDO::PARAM_STR);
 $query->bindParam(':pprice',$pprice,PDO::PARAM_STR);
 $query->bindParam(':pfeatures',$pfeatures,PDO::PARAM_STR);
 $query->bindParam(':pdetails',$pdetails,PDO::PARAM_STR);
@@ -92,11 +125,11 @@ $error="Something went wrong. Please try again";
  	<div class="grid-form">
  
 <!---->
-  <div class="grid-form1">
-  	       <h3>Create Package</h3>
-  	        	  <?php if($error){?><div class="errorWrap"><strong>ERROR</strong>:<?php echo htmlentities($error); ?> </div><?php } 
-				else if($msg){?><div class="succWrap"><strong>SUCCESS</strong>:<?php echo htmlentities($msg); ?> </div><?php }?>
-  	         <div class="tab-content">
+				<div class="grid-form1">
+					<h3>Create Package</h3>
+						<?php if($error){?><div class="errorWrap"><strong>ERROR</strong>:<?php echo htmlentities($error); ?> </div><?php } 
+						else if($msg){?><div class="succWrap"><strong>SUCCESS</strong>:<?php echo htmlentities($msg); ?> </div><?php }?>
+					<div class="tab-content">
 						<div class="tab-pane active" id="horizontal-form">
 							<form class="form-horizontal" name="package" method="post" enctype="multipart/form-data">
 								<div class="form-group">
@@ -105,28 +138,40 @@ $error="Something went wrong. Please try again";
 										<input type="text" class="form-control1" name="packagename" id="packagename" placeholder="Create Package" required>
 									</div>
 								</div>
-<div class="form-group">
+						<div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Package Type</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control1" name="packagetype" id="packagetype" placeholder=" Package Type eg- Family Package / Couple Package" required>
 									</div>
 								</div>
 
-<div class="form-group">
+						<div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Package Location</label>
 									<div class="col-sm-8">
-										<input type="text" class="form-control1" name="packagelocation" id="packagelocation" placeholder=" Package Location" required>
+										<input type="text" class="form-control1" name="packagelocation" id="packagelocation" placeholder=" Map Location" required>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="focusedinput" class="col-sm-2 control-label">Google Map</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control1" name="map" id="packagelocation" placeholder=" Package Location" required>
+									</div>
+								</div>
+																<div class="form-group">
+									<label for="focusedinput" class="col-sm-2 control-label">Weather</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control1" name="weather" id="weather" placeholder=" Weather Information" required>
 									</div>
 								</div>
 
-<div class="form-group">
-									<label for="focusedinput" class="col-sm-2 control-label">Package Price in USD</label>
+			<div class="form-group">
+									<label for="focusedinput" class="col-sm-2 control-label">Package Price in PKR</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control1" name="packageprice" id="packageprice" placeholder=" Package Price is USD" required>
 									</div>
 								</div>
 
-<div class="form-group">
+			<div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Package Features</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control1" name="packagefeatures" id="packagefeatures" placeholder="Package Features Eg-free Pickup-drop facility" required>
@@ -134,13 +179,13 @@ $error="Something went wrong. Please try again";
 								</div>		
 
 
-<div class="form-group">
+			<div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Package Details</label>
 									<div class="col-sm-8">
 										<textarea class="form-control" rows="5" cols="50" name="packagedetails" id="packagedetails" placeholder="Package Details" required></textarea> 
 									</div>
 								</div>															
-<div class="form-group">
+			<div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Package Image</label>
 									<div class="col-sm-8">
 										<input type="file" name="packageimage" id="packageimage" required>

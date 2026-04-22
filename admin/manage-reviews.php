@@ -7,34 +7,18 @@ if(strlen($_SESSION['alogin'])==0)
 header('location:index.php');
 }
 else{ 
-	// code for cancel
-if(isset($_REQUEST['bkid']))
-	{
-$bid=intval($_GET['bkid']);
-$status=2;
-$cancelby='a';
-$sql = "UPDATE tblbooking SET status=:status,CancelledBy=:cancelby WHERE  BookingId=:bid";
-$query = $dbh->prepare($sql);
-$query -> bindParam(':status',$status, PDO::PARAM_STR);
-$query -> bindParam(':cancelby',$cancelby , PDO::PARAM_STR);
-$query-> bindParam(':bid',$bid, PDO::PARAM_STR);
-$query -> execute();
+// Code for deletion
+if($_GET['action']=='delete')
+{
+$id=intval($_GET['id']);
+//$query=mysqli_query($con,"delete from tblreviews where PackageId =:id");
+$sql ="delete from tblreviews where id =:id";
+$query = $dbh -> prepare($sql);
+$query -> bindParam(':id', $id, PDO::PARAM_STR);
+$query->execute();
+ echo "<script>alert('Record deleted.');</script>";
+ echo "<script>window.location.href='manage-reviews.php'</script>";
 
-$msg="Booking Cancelled successfully";
-}
-
-// code for confirm
-if(isset($_REQUEST['bckid']))
-	{
-$bcid=intval($_GET['bckid']);
-$status=1;
-$cancelby='a';
-$sql = "UPDATE tblbooking SET status=:status WHERE BookingId=:bcid";
-$query = $dbh->prepare($sql);
-$query -> bindParam(':status',$status, PDO::PARAM_STR);
-$query-> bindParam(':bcid',$bcid, PDO::PARAM_STR);
-$query -> execute();
-$msg="Booking Confirm successfully";
 }
 
 
@@ -44,7 +28,7 @@ $msg="Booking Confirm successfully";
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>TMS | Admin manage Bookings</title>
+<title>TMS | Admin manage Issues</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
@@ -104,6 +88,18 @@ $msg="Booking Confirm successfully";
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 }
 		</style>
+		<script language="javascript" type="text/javascript">
+var popUpWin=0;
+function popUpWindow(URLStr, left, top, width, height)
+{
+ if(popUpWin)
+{
+if(!popUpWin.closed) popUpWin.close();
+}
+popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=yes,width='+600+',height='+600+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+}
+
+</script>
 </head> 
 <body>
    <div class="page-container">
@@ -116,7 +112,7 @@ $msg="Booking Confirm successfully";
 				</div>
 <!--heder end here-->
 <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a><i class="fa fa-angle-right"></i>Manage Bookings</li>
+                <li class="breadcrumb-item"><a href="index.html">Home</a><i class="fa fa-angle-right"></i>Manage Reviews</li>
             </ol>
 <div class="agile-grids">	
 				<!-- tables -->
@@ -124,76 +120,46 @@ $msg="Booking Confirm successfully";
 				else if($msg){?><div class="succWrap"><strong>SUCCESS</strong>:<?php echo htmlentities($msg); ?> </div><?php }?>
 				<div class="agile-tables">
 					<div class="w3l-table-info">
-					  <h2>Manage <?php echo $_GET['uname'];?>'s Bookings</h2>
+					  <h2>Manage Reviews</h2>
 					    <table id="table">
 						<thead>
 						  <tr>
-						  <th>Booikn id</th>
+						  <th>#</th>
+							<th>User ID</th>
 							<th>Name</th>
-							<th>Mobile No.</th>
-							<th>Email Id</th>
-							<th>RegDate </th>
-							<th>From /To </th>
-							<th>Comment </th>
-							<th>Status </th>
+							<th>Email</th>
+							<th>Message </th>
+							<th>Posting date </th>
 							<th>Action </th>
+							
 						  </tr>
 						</thead>
 						<tbody>
-<?php $uid=$_GET['uid'];
-$sql = "SELECT tblbooking.BookingId as bookid,tblusers.FullName as fname,tblusers.MobileNumber as mnumber,tblusers.EmailId as email,tbltourpackages.PackageName as pckname,tblbooking.PackageId as pid,tblbooking.FromDate as fdate,tblbooking.ToDate as tdate,tblbooking.Comment as comment,tblbooking.status as status,tblbooking.CancelledBy as cancelby,tblbooking.UpdationDate as upddate from  tblbooking
- left join tblusers  on  tblbooking.UserEmail=tblusers.EmailId
- left join tbltourpackages on tbltourpackages.PackageId=tblbooking.PackageId where tblbooking.UserEmail='$uid'";
+<?php $sql = "SELECT * FROM tblreviews ORDER BY id DESC";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
+
 if($query->rowCount() > 0)
 {
 foreach($results as $result)
 {				?>		
 						  <tr>
-							<td>#BK-<?php echo htmlentities($result->bookid);?></td>
-							<td><?php echo htmlentities($result->fname);?></td>
-							<td><?php echo htmlentities($result->mnumber);?></td>
-							<td><?php echo htmlentities($result->email);?></td>
-							<td><a href="update-package.php?pid=<?php echo htmlentities($result->pid);?>"><?php echo htmlentities($result->pckname);?></a></td>
-							<td><?php echo htmlentities($result->fdate);?> To <?php echo htmlentities($result->tdate);?></td>
-								<td><?php echo htmlentities($result->comment);?></td>
-								<td><?php if($result->status==0)
-{
-echo "Pending";
-}
-if($result->status==1)
-{
-echo "Confirmed";
-}
-if($result->status==2 and  $result->cancelby=='a')
-{
-echo "Canceled by you at " .$result->upddate;
-} 
-if($result->status==2 and $result->cancelby=='u')
-{
-echo "Canceled by User at " .$result->upddate;
+							<td width="120">#00<?php echo htmlentities($result->id);?></td>
+							<td width="50"><?php echo htmlentities($result->userId);?></td>
+								<td width="50"><?php echo htmlentities($result->name);?></td>
+							<td width="50"><?php echo htmlentities($result->email);?></td>
+						
+							<td width="200"><?php echo htmlentities($result->message);?></a></td>
+							<td width="400"><?php echo htmlentities($result->created_at);?></td>
+							
+			
 
-}
-?></td>
+<td><a href="manageissues.php?action=delete&&id=<?php echo $result->id;?>" onclick="return confirm('Do you really want to delete?')" class="btn btn-danger btn-block">Delete</a>
+</td>
 
-<?php if($result->status==2)
-{
-	?><td>Cancelled</td>
-<?php } elseif($result->status==1)
-{
-	?><td>Confirmed</td>
-<?php }
-
-
-else {?>
-<td><a href="manage-bookings.php?bkid=<?php echo htmlentities($result->bookid);?>" onclick="return confirm('Do you really want to cancel booking')" >Cancel</a> / <a href="manage-bookings.php?bckid=<?php echo htmlentities($result->bookid);?>" onclick="return confirm('booking has been confirm')" >Confirm</a></td>
-<?php }?>
-
-						  </tr>
-						 <?php $cnt=$cnt+1;} }?>
+</tr>
+						 <?php } }?>
 						</tbody>
 					  </table>
 					</div>

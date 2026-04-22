@@ -2,12 +2,15 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+
 if(strlen($_SESSION['alogin'])==0)
-	{	
+{	
 header('location:index.php');
 }
 else{
+
 $pid=intval($_GET['pid']);	
+
 if(isset($_POST['submit']))
 {
 $pname=$_POST['packagename'];
@@ -17,22 +20,54 @@ $map=$_POST['map'];
 $pprice=$_POST['packageprice'];	
 $pfeatures=$_POST['packagefeatures'];
 $pdetails=$_POST['packagedetails'];	
-$pimage=$_FILES["packageimage"]["name"];
-$sql="update TblTourPackages set PackageName=:pname,PackageType=:ptype,PackageLocation=:plocation,map=:map,PackagePrice=:pprice,PackageFetures=:pfeatures,PackageDetails=:pdetails where PackageId=:pid";
+
+// ✅ WEATHER API INTEGRATION (AUTO UPDATE)
+$apiKey = "27d393cb64684c90bc5173323261804"; 
+$city = $plocation;
+
+$url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$city&aqi=yes";
+
+$response = @file_get_contents($url);
+$data = json_decode($response, true);
+
+if ($data && isset($data['current'])) {
+    $condition = $data['current']['condition']['text'];
+    $temp = $data['current']['temp_c'];
+    $weather = $condition . " (" . $temp . "°C)";
+} else {
+    $weather = "Weather not available";
+}
+
+
+// ✅ SAME SQL (just using API weather instead of POST)
+$sql="update TblTourPackages set 
+PackageName=:pname,
+PackageType=:ptype,
+PackageLocation=:plocation,
+map=:map,
+weather=:weather,
+PackagePrice=:pprice,
+PackageFetures=:pfeatures,
+PackageDetails=:pdetails 
+where PackageId=:pid";
+
 $query = $dbh->prepare($sql);
+
 $query->bindParam(':pname',$pname,PDO::PARAM_STR);
 $query->bindParam(':ptype',$ptype,PDO::PARAM_STR);
 $query->bindParam(':plocation',$plocation,PDO::PARAM_STR);
 $query->bindParam(':map',$map,PDO::PARAM_STR);
+$query->bindParam(':weather',$weather,PDO::PARAM_STR);
 $query->bindParam(':pprice',$pprice,PDO::PARAM_STR);
 $query->bindParam(':pfeatures',$pfeatures,PDO::PARAM_STR);
 $query->bindParam(':pdetails',$pdetails,PDO::PARAM_STR);
 $query->bindParam(':pid',$pid,PDO::PARAM_STR);
+
 $query->execute();
+
 $msg="Package Updated Successfully";
 }
-
-	?>
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -133,6 +168,13 @@ foreach($results as $result)
 									<label for="focusedinput" class="col-sm-2 control-label">Location in Map</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control1" name="map" id="packageLocation" placeholder=" Map Location" value="<?php echo htmlentities($result->map);?>" required>
+									</div>
+								</div>
+
+<div class="form-group">
+									<label for="focusedinput" class="col-sm-2 control-label">Weather</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control1" name="weather" id="weather" placeholder=" weather" value="<?php echo htmlentities($result->weather);?>" required>
 									</div>
 								</div>
 

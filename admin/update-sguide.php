@@ -120,7 +120,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="form-group">
 									<label for="focusedinput" class="col-sm-2 control-label">Safety  Details</label>
 									<div class="col-sm-8">
-										<textarea class="form-control" rows="5" cols="50" name="safetydetails" id="packagedetails" placeholder="Safety Details" required><?php echo htmlentities($result->safetydetails);?></textarea> 
+										<!-- <textarea class="form-control" rows="5" cols="50" name="safetydetails" id="packagedetails" placeholder="Safety Details" required><?php echo htmlentities($result->safetydetails);?></textarea>  -->
+										 <!-- ADDED: editor hint -->
+										 <textarea class="form-control" rows="5" cols="50" name="safetydetails" id="packagedetails" placeholder="Safety Details" required><?php echo htmlentities($result->safetydetails);?></textarea>
+<small class="text-muted">
+  
+  Type normally with line breaks. For headings use &lt;h4&gt;Your heading&lt;/h4&gt;.
+  Allowed: &lt;h2&gt;, &lt;h3&gt;, &lt;h4&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;p&gt;, &lt;br&gt;.
+</small>
+<!-- End Editor Hint -->
 									</div>
 								</div>	
 
