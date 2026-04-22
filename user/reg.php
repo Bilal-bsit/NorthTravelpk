@@ -1,5 +1,6 @@
 <?php
 include 'inc/config.php'; 
+$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
     $name    = htmlspecialchars($_POST['name']);
@@ -26,8 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
             window.location.href='login.php';
         </script>";
     } catch (PDOException $e) {
-        echo "<script>alert('Error: Could not register.');</script>";
+        //23000 is MySQL error for unique keys
+    if ($e->getCode() === '23000') {
+        echo "<script>alert('This email is already registered.');history.back();</script>";
+    } else {
+        echo "<script>alert('Registration failed.');history.back();</script>";
     }
+    exit;
+}
+    
+    // {
+    //     echo "<script>alert('Error: Could not register.');</script>";
+    // }
 }
 ?>
 

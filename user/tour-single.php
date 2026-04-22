@@ -2,6 +2,7 @@
 	<?php
 	session_start();
 	include('inc/config.php'); // assumes $dbh (PDO) is defined
+    $next = isset($_SERVER['REQUEST_URI']) ? urlencode($_SERVER['REQUEST_URI']) : ''; // ADDED: ensure $next exists for login redirect
 
 	if (!isset($_GET['PackageId'])) {
 		echo "No tour selected.";
@@ -45,15 +46,23 @@
 
     $userId   = $_SESSION['userid'];
     $email    = $_SESSION['email'];
-    $packageId = intval($_POST['PackageId']);
-    $fromDate = htmlspecialchars($_POST['fromdatepicker']);
-    $toDate   = htmlspecialchars($_POST['todatepicker']);
-    $comment  = htmlspecialchars($_POST['comments']);
-    $regDate  = date("Y-m-d");
+    $packageId = $tour['PackageId']; // FIXED
+$Destination = $tour['PackageName']; // ADDED: default to tour name, can be overridden by form input
 
+$fromDate = $_POST['fromdatepicker'];
+$toDate   = $_POST['todatepicker'];
+$comment  = trim($_POST['comments']);
+//     $packageId = intval($_POST['PackageId']);
+//    $fromDate = $_POST['fromdatepicker'];
+//     $toDate   = $_POST['todatepicker'];
+//     $comment  = trim($_POST['comments']);   
+    
+//     $regDate  = date("Y-m-d");
+//     $packageId = $tour['PackageId']; // force consistency
+//     $Destination = $tour['PackageLocation'];
     try {
-        $insert = $dbh->prepare("INSERT INTO tblbooking (PackageId, UserId, UserEmail, FromDate, ToDate, Comment, RegDate) 
-                                 VALUES (:PackageId, :UserId, :UserEmail, :FromDate, :ToDate, :Comment, :RegDate)");
+        $insert = $dbh->prepare("INSERT INTO tblbooking (PackageId, UserId, UserEmail, FromDate, ToDate, Comment, RegDate, Destination) 
+                                 VALUES (:PackageId, :UserId, :UserEmail, :FromDate, :ToDate, :Comment, :RegDate, :Destination)");
         $insert->bindParam(':PackageId', $packageId, PDO::PARAM_INT);
         $insert->bindParam(':UserId', $userId, PDO::PARAM_INT);
         $insert->bindParam(':UserEmail', $email, PDO::PARAM_STR);
@@ -61,6 +70,7 @@
         $insert->bindParam(':ToDate', $toDate, PDO::PARAM_STR);
         $insert->bindParam(':Comment', $comment, PDO::PARAM_STR);
         $insert->bindParam(':RegDate', $regDate, PDO::PARAM_STR);
+        $insert->bindParam(':Destination', $Destination, PDO::PARAM_STR);
 
         if ($insert->execute()) {
             echo "<script>alert('Tour booked successfully!'); window.location.href='my-booking.php';</script>";
@@ -158,9 +168,49 @@ if (isset($_POST['addreview'])) {
 							
                                <?php if (!empty($safetyTips)): ?>
 								
-								<?php foreach ($safetyTips as $tip): ?>
+								<!-- <?php foreach ($safetyTips as $tip): ?>
 									<p class="journey-day-title"><?php echo htmlspecialchars($tip['safetydetails']); ?></p>
-								<?php endforeach; ?>
+								<?php endforeach; ?> -->
+
+
+
+<!-- Start Formating -->
+
+<?php if (!empty($safetyTips)): ?>
+
+    <?php
+    // ADDED: helper to render line breaks + allow a tiny, safe HTML subset for headings/lists
+    if (!function_exists('render_safe_safety')) {
+        function render_safe_safety($raw) {
+            // Allow only these tags (no attributes): headings, emphasis, lists, paragraphs, line breaks
+            $allowed = '<h2><h3><h4><strong><em><b><ul><ol><li><p><br>';
+
+            // If admin included allowed HTML tags, keep only those; otherwise convert newlines to <br>
+            if (preg_match('/<\s*(h2|h3|h4|ul|ol|li|p|br|strong|em|b)\b/i', $raw)) {
+                return strip_tags($raw, $allowed); // ADDED: strip everything except allowed tags
+            }
+            return nl2br(htmlspecialchars($raw, ENT_QUOTES, 'UTF-8')); // ADDED: plain text -> <br> safely
+        }
+    }
+    ?>
+
+    <?php foreach ($safetyTips as $tip): ?>
+        <div class="journey-day-title">
+            <?php echo render_safe_safety($tip['safetydetails'] ?? ''); // CHANGED: use helper ?>
+        </div>
+    <?php endforeach; ?>
+
+<?php else: ?>
+    <p>No safety tips available for this tour.</p>
+<?php endif; ?>
+
+<!-- End Formating -->
+
+
+
+
+
+
 							<?php else: ?>
 								<p>No safety tips available for this tour.</p>
 							<?php endif; ?>
@@ -225,6 +275,40 @@ if (isset($_POST['addreview'])) {
 					
 					
                     <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 col-12">
+
+ <!-- for weather API -->
+                     
+
+                                        <div id="contact-weather" class="widget-weather">
+
+<?php
+
+$city = $tour['PackageLocation']; // ADDED: get city from tour data
+$apiKey = "27d393cb64684c90bc5173323261804";
+
+$url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=" . urlencode($city) . "&aqi=yes";
+
+$response = @file_get_contents($url);
+$data = json_decode($response, true);
+
+if ($data && isset($data['current'])) {
+    echo "<div style='padding:15px;background:#f5f5f5;border-radius:10px;text-align:center;'>";
+    echo "<h4>Weather in " . htmlspecialchars($city) . "</h4>";
+    echo "<img src='https:" . $data['current']['condition']['icon'] . "'>";
+    echo "<h3>" . $data['current']['temp_c'] . "°C</h3>";
+    echo "<p>" . $data['current']['condition']['text'] . "</p>";
+    echo "</div>";
+} else {
+    echo "<p>Weather not available</p>";
+}
+?>
+
+</div>
+<br>
+
+
+
+
                         <div class="widget-primary support-list">
                             <div class="widget-primary-title">
                                 <h3>Why Book With Us?</h3>
@@ -270,6 +354,24 @@ if (isset($_POST['addreview'])) {
                                             </div>
                                         </div>
                                     </div>
+
+
+                                									<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label class="control-label sr-only" for="datepicker"></label>
+												<label class="text-white">Destination Name</label>
+                                                <div class="input-group">
+                                                    <input id="" name="Destination" type="text" placeholder="Destination Name" class="form-control" required>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                         <div class="form-group">
                                             <label class="control-label text-white" for="textarea"> Add Your Comments</label>
@@ -295,6 +397,12 @@ if (isset($_POST['addreview'])) {
 								referrerpolicy="no-referrer-when-downgrade">
 							</iframe>
 						</div>
+
+                   
+
+
+
+
                     </div>
                 </div>
             

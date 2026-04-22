@@ -16,6 +16,12 @@ $bookings = [];
 
 try {
     $stmt = $dbh->prepare("SELECT * FROM tblbooking WHERE UserId = :userid ORDER BY RegDate DESC");
+	$stmt = $dbh->prepare("SELECT tblbooking.*, tbltourpackages.PackageName 
+    FROM tblbooking 
+    JOIN tbltourpackages 
+    ON tblbooking.PackageId = tbltourpackages.PackageId
+    WHERE tblbooking.UserId = :userid 
+    ORDER BY tblbooking.RegDate DESC");
     $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->execute();
     $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -65,11 +71,12 @@ try {
 								<thead>
 									<tr>
 										<th>#</th>
-										<th>Package ID</th>
+										<th>ID</th>
+										<th>Package Name</th>
 										<th>From Date</th>
 										<th>To Date</th>
 										<th>Comments</th>
-										<th>Booking Date</th>
+										<!-- <th>Booking Date</th> -->
 										<th>Status</th>
 									</tr>
 								</thead>
@@ -79,10 +86,11 @@ try {
 											<tr>
 												<td><?php echo $index + 1; ?></td>
 												<td><?php echo htmlspecialchars($booking['PackageId']); ?></td>
+												<td><?php echo htmlspecialchars($booking['PackageName']); ?></td>
 												<td><?php echo htmlspecialchars($booking['FromDate']); ?></td>
 												<td><?php echo htmlspecialchars($booking['ToDate']); ?></td>
 												<td><?php echo htmlspecialchars($booking['Comment']); ?></td>
-												<td><?php echo htmlspecialchars($booking['RegDate']); ?></td>
+												<!-- <td><?php echo htmlspecialchars($booking['RegDate']); ?></td> -->
 												<td>
 												<?php
 												$status = $booking['status'] ?? 0;

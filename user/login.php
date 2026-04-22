@@ -57,7 +57,9 @@ if (isset($_POST['login'])) {
                     <div class="signin-image">
                         <figure><img src="reg/images/signin-image.jpg" alt="sing up image"></figure>
                         <a href="reg.php" class="signup-image-link">Create an account</a>
+                        
                     </div>
+                    
 
                     <div class="signin-form">
                         <h2 class="form-title">Sign in</h2>
@@ -71,6 +73,9 @@ if (isset($_POST['login'])) {
                                 <input type="password" name="Password" id="Password" placeholder="Password"/>
                             </div>
                             <div class="form-group">
+                                <p style="margin-top:10px;">
+                                <a href="forgot-password.php">Forgot Password?</a>
+                                    </p>
                                 <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
                                 <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
                             </div>

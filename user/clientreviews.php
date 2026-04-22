@@ -62,6 +62,7 @@ if (!isset($_SESSION['userid'])) {
 									<div class="testimonial-content">
 										<p class="testimonial-text">“<?php echo htmlentities($review->message); ?>”</p>
 										<span class="testi-meta">
+											<!-- this $review-> name shows profile name at review -->
 											<strong>- <?php echo htmlentities($review->name); ?></strong>
 											(Client)
 										</span>

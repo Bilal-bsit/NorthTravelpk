@@ -44,7 +44,7 @@ if (!isset($_SESSION['userid'])) {
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                                 <div class="slider-captions">
                                     <h1 class="slider-title"> Travel Inside Pakistan explore it. </h1>
-                                    <a href="#" class="btn btn-primary">Book Now</a>
+                                    <a href="tourlist.php" class="btn btn-primary">Book Now</a>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +182,7 @@ if (!isset($_SESSION['userid'])) {
             </div>
         </div>
    
-        <div class="space-medium">
+        <!-- <div class="space-medium">
             <div class="container-fluid">
                 <div class="row">
                    
@@ -260,7 +260,7 @@ if (!isset($_SESSION['userid'])) {
             </div>
         </div>
        </div>
-	   
+	    -->
         <div class="space-medium">
             <div class="container">
                 <div class="row">

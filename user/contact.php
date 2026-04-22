@@ -144,8 +144,8 @@ if (!isset($_SESSION['userid'])) {
                             <h4 class="contact-info-title">Call Us</h4>
                             <div class="contact-info-content">
                                 <i class="fa fa-phone contact-info-icon"></i>
-                                <p><strong>+9234500000
-                                    <br> +92334545000</strong>
+                                <p><strong>+923164716308
+                                    <br> +923274665063</strong>
                                 </p>
                             </div>
                         </div>
@@ -157,7 +157,7 @@ if (!isset($_SESSION['userid'])) {
                             <h4 class="contact-info-title">Email Us</h4>
                             <div class="contact-info-content">
                                 <i class="fa fa-envelope contact-info-icon"></i>
-                                <p><strong>geovista@travel.com<br> support@geovista.com</strong>
+                                <p><strong>northtravelpk.com<br> support@geovista.com</strong>
                                 </p>
                             </div>
                         </div>
@@ -168,7 +168,7 @@ if (!isset($_SESSION['userid'])) {
         </div>
       
 	  
-	 <script>
+	 <!-- <script>
     function initMap() {
         var location = {
             lat: 31.7132,  // Latitude for Jinnah Park, Sheikhupura
@@ -189,7 +189,7 @@ if (!isset($_SESSION['userid'])) {
 
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZib4Lvp0g1L8eskVBFJ0SEbnENB6cJ-g&callback=initMap">
-</script>
+</script> -->
 
 	  <?php
 	  include 'inc/footer.php';
