@@ -55,7 +55,7 @@
                                         
                                     </ul>
                                     <p class="price">Rs. <?php echo htmlentities($row->PackagePrice); ?></p>
-                                        <a href="toursingle.php" class="btn-link">Go for <?php echo htmlentities($row->PackageLocation); ?> <i class="fa fa-angle-right"></i></a></div>
+                                        <a href="tour-single.php?PackageId=<?php echo $row->PackageId; ?>" class="btn-link">Go for <?php echo htmlentities($row->PackageLocation); ?> <i class="fa fa-angle-right"></i></a></div>
                                 
                             </div>
                         </div>

@@ -142,7 +142,7 @@
                             <h4 class="contact-info-title">Email Us</h4>
                             <div class="contact-info-content">
                                 <i class="fa fa-envelope contact-info-icon"></i>
-                                <p><strong>geovista@travel.com<br> support@geovista.com</strong>
+                                <p><strong>northtravelpk.com<br> support@geovista.com</strong>
                                 </p>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
-
 	<?php
 	session_start();
 	include('inc/config.php'); // assumes $dbh (PDO) is defined
+    //new veriable
     $next = isset($_SERVER['REQUEST_URI']) ? urlencode($_SERVER['REQUEST_URI']) : ''; // ADDED: ensure $next exists for login redirect
 
 	if (!isset($_GET['PackageId'])) {
@@ -38,14 +38,16 @@
 	} catch (PDOException $e) {
 		echo "Error loading safety tips: " . $e->getMessage();
 	}
+//Insert button for login in laert
+
 
 	if (isset($_POST['BookNow'])) {
     if (!isset($_SESSION['userid']) || !isset($_SESSION['email'])) {
-        die("You must be logged in to book a tour.");
+        echo"<script>alert('You must be logged in to book a tour.');window.location.href = 'user/login.php?next={$next}';</script>";
     }
 
-    $userId   = $_SESSION['userid'];
-    $email    = $_SESSION['email'];
+    // $userId   = $_SESSION['userid'];
+    // $email    = $_SESSION['email'];
     $packageId = intval($_POST['PackageId']);
     $fromDate = htmlspecialchars($_POST['fromdatepicker']);
     $toDate   = htmlspecialchars($_POST['todatepicker']);
@@ -73,10 +75,10 @@
         echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
     }
 }
-
+//insert login button in alert
 if (isset($_POST['addreview'])) {
     if (!isset($_SESSION['userid'], $_SESSION['name'], $_SESSION['email'])) {
-        echo "<script>alert('Please log in to submit a review.');</script>";
+        echo "<script>alert('Please log in to submit a review.');window.location.href = 'user/login.php?next={$next}';</script>";
         exit;
     }
 
@@ -126,7 +128,7 @@ if (isset($_POST['addreview'])) {
 
 <div class="wrapper">
      
-        <div class="" style="background-image: url('../admin/pacakgeimages/<?php echo htmlspecialchars($tour['PackageImage']); ?>'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 100px 0; position: relative;">
+        <div class="" style="background-image: url('admin/pacakgeimages/<?php echo htmlspecialchars($tour['PackageImage']); ?>'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 100px 0; position: relative;">
             <div class="container">
                 <div class="row">
 				
@@ -159,13 +161,13 @@ if (isset($_POST['addreview'])) {
 							
                                <?php if (!empty($safetyTips)): ?>
 								
-								<!-- <?php foreach ($safetyTips as $tip): ?>
+								 <!-- <?php foreach ($safetyTips as $tip): ?>
 									<p class="journey-day-title"><?php echo htmlspecialchars($tip['safetydetails']); ?></p>
 								<?php endforeach; ?> -->
 
 
+<!-- Formating Text                         -->
 
-<!-- Start Formating -->
 
 <?php if (!empty($safetyTips)): ?>
 
@@ -195,7 +197,13 @@ if (isset($_POST['addreview'])) {
     <p>No safety tips available for this tour.</p>
 <?php endif; ?>
 
-<!-- End Formating -->
+<!-- Formating End -->
+
+
+
+
+
+
 
 
 

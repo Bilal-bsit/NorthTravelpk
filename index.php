@@ -332,13 +332,13 @@
                         <div class="service-block border-bottom border-right">
                             <div class="service-img"><img src="images/hotel_1.png" alt=""></div>
                             <div class="service-content">
-                                <h3 class="service-title">Hotel Reservation</h3></div>
+                                <h3 class="service-title">Affordable Hotel Reservation</h3></div>
                         </div>
                     </div>
                     
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 nopl nopr">
                         <div class="service-block border-bottom border-right">
-                            <div class="service-img"><img src="images/disability.png" alt=""></div>
+                            <div class="service-img"><img src="images/staff.png" alt=""></div>
                             <div class="service-content">
                                 <h3 class="service-title">Staff Transportation Services </h3></div>
                         </div>
@@ -346,17 +346,17 @@
                
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 nopl">
                         <div class="service-block border-bottom">
-                            <div class="service-img"><img src="images/airplane.png" alt=""></div>
+                            <div class="service-img"><img src="images/safety.png" alt=""></div>
                             <div class="service-content">
-                                <h3 class="service-title">Air Ticketing Services</h3></div>
+                                <h3 class="service-title">Safety Guide</h3></div>
                         </div>
                     </div>
                 
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 nopr">
                         <div class="service-block border-right">
-                            <div class="service-img"><img src="images/passport.png" alt=""></div>
+                            <div class="service-img"><img src="images/adventure.png" alt=""></div>
                             <div class="service-content">
-                                <h3 class="service-title">Passport and Visa Assistance </h3></div>
+                                <h3 class="service-title">Adventure </h3></div>
                         </div>
                     </div>
                    
@@ -364,7 +364,7 @@
                         <div class="service-block  border-right">
                             <div class="service-img"><img src="images/car_wash.png" alt=""></div>
                             <div class="service-content">
-                                <h3 class="service-title">Car Rental Services </h3></div>
+                                <h3 class="service-title">Jeep Rental Service </h3></div>
                         </div>
                     </div>
                   
@@ -372,7 +372,7 @@
                         <div class="service-block service-right-border service-bottom-border">
                             <div class="service-img"><img src="images/car.png" alt=""></div>
                             <div class="service-content">
-                                <h3 class="service-title">Car on Call</h3></div>
+                                <h3 class="service-title">Jeep on Call</h3></div>
                         </div>
                     </div>
                 </div>
